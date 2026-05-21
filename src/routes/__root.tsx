@@ -72,14 +72,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "Game Pick - Temukan Game Terbaik untuk Semua Platform" },
+      { name: "description", content: "Temukan rekomendasi game terbaik untuk Android, iOS, PC, PlayStation, Xbox, Nintendo Switch, dan Cloud Gaming dalam satu aplikasi pintar." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "Game Pick - Temukan Game Terbaik untuk Semua Platform" },
+      { property: "og:description", content: "Temukan rekomendasi game terbaik untuk Android, iOS, PC, PlayStation, Xbox, Nintendo Switch, dan Cloud Gaming dalam satu aplikasi pintar." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Game Pick - Temukan Game Terbaik untuk Semua Platform" },
+      { name: "twitter:description", content: "Temukan rekomendasi game terbaik untuk Android, iOS, PC, PlayStation, Xbox, Nintendo Switch, dan Cloud Gaming dalam satu aplikasi pintar." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/71d26a7b-66ec-44ef-93f9-1df109f00c7d" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/71d26a7b-66ec-44ef-93f9-1df109f00c7d" },
     ],
     links: [
       {
