@@ -1,8 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState, useEffect } from "react";
+import { toast } from "sonner";
 import {
   Gamepad2, Sparkles, Layers, Cpu, Flame, Trophy, RefreshCw,
   Smartphone, Apple, Monitor, Download, Star, ChevronRight,
-  Instagram, Youtube, ArrowRight, Cloud, Joystick,
+  Instagram, Youtube, ArrowRight, Cloud, Joystick, Menu, X,
 } from "lucide-react";
 import { Mockup } from "@/components/gamepick/Mockup";
 
@@ -85,6 +87,28 @@ const faqs = [
 ];
 
 function LandingPage() {
+  const [user, setUser] = useState<any>(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
+  useEffect(() => {
+    const storedUser = localStorage.getItem("gamepick_user");
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("gamepick_token");
+    localStorage.removeItem("gamepick_user");
+    setUser(null);
+    toast.success("Berhasil keluar.");
+  };
+
   return (
     <div className="min-h-screen text-foreground">
       {/* NAV */}
@@ -101,11 +125,123 @@ function LandingPage() {
             <a href="#cara-kerja" className="hover:text-foreground transition">Cara Kerja</a>
             <a href="#goty" className="hover:text-foreground transition">GOTY</a>
             <a href="#faq" className="hover:text-foreground transition">FAQ</a>
+            {user && user.role === "admin" && (
+              <Link to="/admin" className="text-cyan hover:text-cyan/80 transition font-semibold">
+                Admin Panel
+              </Link>
+            )}
           </nav>
-          <a href="#download" className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition">
-            <Download className="w-4 h-4" /> Download
-          </a>
+
+          {/* Desktop User Status / Auth Buttons */}
+          <div className="hidden md:flex items-center gap-4">
+            {user ? (
+              <div className="flex items-center gap-3">
+                <span className="text-xs text-muted-foreground hidden sm:inline">
+                  Hi, <span className="text-foreground font-semibold">{user.name}</span>
+                </span>
+                <button
+                  onClick={handleLogout}
+                  className="px-4 py-2 rounded-full border border-white/10 hover:bg-white/5 text-xs font-semibold text-foreground transition cursor-pointer"
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <Link
+                to="/login"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition"
+              >
+                Sign In
+              </Link>
+            )}
+          </div>
+
+          {/* Mobile Hamburger Button */}
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="md:hidden flex items-center justify-center w-9 h-9 rounded-xl glass hover:border-cyan/40 transition text-foreground cursor-pointer"
+            aria-label="Toggle Menu"
+          >
+            {isMenuOpen ? (
+              <X className="w-5 h-5 text-cyan" />
+            ) : (
+              <Menu className="w-5 h-5" />
+            )}
+          </button>
         </div>
+
+        {/* Mobile Navigation Dropdown */}
+        {isMenuOpen && (
+          <div className="md:hidden glass-strong border-t border-white/5 animate-in fade-in slide-in-from-top-4 duration-200">
+            <div className="container mx-auto px-6 py-4 flex flex-col gap-4 text-sm text-muted-foreground">
+              <a
+                href="#fitur"
+                onClick={() => setIsMenuOpen(false)}
+                className="hover:text-foreground transition py-1"
+              >
+                Fitur
+              </a>
+              <a
+                href="#cara-kerja"
+                onClick={() => setIsMenuOpen(false)}
+                className="hover:text-foreground transition py-1"
+              >
+                Cara Kerja
+              </a>
+              <a
+                href="#goty"
+                onClick={() => setIsMenuOpen(false)}
+                className="hover:text-foreground transition py-1"
+              >
+                GOTY
+              </a>
+              <a
+                href="#faq"
+                onClick={() => setIsMenuOpen(false)}
+                className="hover:text-foreground transition py-1"
+              >
+                FAQ
+              </a>
+              {user && user.role === "admin" && (
+                <Link
+                  to="/admin"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="text-cyan hover:text-cyan/80 transition py-1 font-semibold"
+                >
+                  Admin Panel
+                </Link>
+              )}
+
+              {/* Mobile Auth Actions */}
+              <div className="border-t border-white/5 pt-3 mt-1 flex flex-col gap-3">
+                {user ? (
+                  <div className="flex flex-col gap-2">
+                    <span className="text-xs text-muted-foreground">
+                      Hi, <span className="text-foreground font-semibold">{user.name}</span>
+                    </span>
+                    <button
+                      onClick={() => {
+                        handleLogout();
+                        setIsMenuOpen(false);
+                      }}
+                      className="w-full text-center px-4 py-2 rounded-xl border border-white/10 hover:bg-white/5 text-xs font-semibold text-foreground transition cursor-pointer"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                ) : (
+                  <Link
+                    to="/login"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="w-full text-center inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition"
+                  >
+                    Sign In
+                  </Link>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </header>
 
       {/* HERO */}
@@ -318,7 +454,15 @@ function LandingPage() {
                 { icon: Apple, label: "iOS", sub: "App Store" },
                 { icon: Monitor, label: "PC", sub: "Windows / Mac" },
               ].map((d) => (
-                <a key={d.label} href="#" className="inline-flex items-center gap-3 px-6 py-3.5 rounded-2xl glass-strong hover:border-white/30 transition card-hover">
+                <a
+                  key={d.label}
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsDownloadModalOpen(true);
+                  }}
+                  className="inline-flex items-center gap-3 px-6 py-3.5 rounded-2xl glass-strong hover:border-white/30 transition card-hover cursor-pointer"
+                >
                   <d.icon className="w-6 h-6 text-cyan" />
                   <div className="text-left">
                     <div className="text-[10px] text-muted-foreground uppercase tracking-wider">{d.sub}</div>
@@ -379,6 +523,56 @@ function LandingPage() {
           </div>
         </div>
       </footer>
+
+      {/* DOWNLOAD COMING SOON MODAL */}
+      {isDownloadModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-300">
+          {/* Backdrop Overlay */}
+          <div
+            className="absolute inset-0 bg-black/70 backdrop-blur-sm transition-opacity"
+            onClick={() => setIsDownloadModalOpen(false)}
+          />
+
+          {/* Modal content box */}
+          <div className="relative w-full max-w-md glass-strong border border-cyan/35 rounded-3xl p-8 text-center shadow-[0_0_50px_rgba(6,182,212,0.18)] animate-in fade-in zoom-in-95 duration-300 bg-gradient-to-br from-[oklch(0.22_0.05_260)] to-[oklch(0.14_0.04_265)] z-10">
+            {/* Header / Accent Icon */}
+            <div className="w-16 h-16 mx-auto rounded-2xl bg-cyan/10 border border-cyan/35 flex items-center justify-center mb-6 glow">
+              <Smartphone className="w-8 h-8 text-cyan animate-pulse" />
+            </div>
+
+            {/* Title */}
+            <h3 className="text-2xl font-display font-bold text-foreground mb-4">
+              🚀 Coming Soon!
+            </h3>
+
+            {/* Description */}
+            <p className="text-sm text-muted-foreground leading-relaxed mb-8">
+              Aplikasi Game Pick saat ini masih dalam tahap pengembangan.
+              Versi Android, iOS, dan PC akan segera tersedia untuk diunduh.
+            </p>
+
+            {/* Actions */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  alert("Fitur notifikasi akan segera hadir.");
+                }}
+                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-primary text-primary-foreground font-semibold glow hover:opacity-90 transition cursor-pointer"
+              >
+                Daftar Notifikasi
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsDownloadModalOpen(false)}
+                className="w-full sm:w-auto px-6 py-3 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-foreground font-semibold transition cursor-pointer"
+              >
+                Saya Mengerti
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
