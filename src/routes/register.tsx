@@ -3,6 +3,8 @@ import { useState } from "react";
 import { Gamepad2, Mail, Lock, User, Eye, EyeOff, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 export const Route = createFileRoute("/register")({
   component: RegisterPage,
 });
@@ -37,7 +39,7 @@ function RegisterPage() {
     setIsLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5000/api/auth/register", {
+      const response = await fetch(`${API_URL}/api/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

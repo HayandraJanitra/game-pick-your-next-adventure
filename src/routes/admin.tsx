@@ -17,6 +17,8 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 export const Route = createFileRoute("/admin")({
   component: AdminDashboard,
 });
@@ -126,7 +128,7 @@ function AdminDashboard() {
     setIsLoading(true);
     try {
       // 1. Fetch Games list
-      const gamesRes = await fetch("http://localhost:5000/api/games", {
+      const gamesRes = await fetch(`${API_URL}/api/games`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (gamesRes.ok) {
@@ -135,7 +137,7 @@ function AdminDashboard() {
       }
 
       // 2. Fetch Stats
-      const statsRes = await fetch("http://localhost:5000/api/games/stats", {
+      const statsRes = await fetch(`${API_URL}/api/games/stats`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (statsRes.ok) {
@@ -231,8 +233,8 @@ function AdminDashboard() {
 
     try {
       const url = editingGame
-        ? `http://localhost:5000/api/games/${editingGame.id}`
-        : "http://localhost:5000/api/games";
+        ? `${API_URL}/api/games/${editingGame.id}`
+        : `${API_URL}/api/games`;
       const method = editingGame ? "PUT" : "POST";
 
       const res = await fetch(url, {
@@ -263,7 +265,7 @@ function AdminDashboard() {
     if (!confirm("Apakah Anda yakin ingin menghapus game ini?")) return;
 
     try {
-      const res = await fetch(`http://localhost:5000/api/games/${id}`, {
+      const res = await fetch(`${API_URL}/api/games/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
